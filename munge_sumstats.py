@@ -183,7 +183,10 @@ def clean_header(header):
 
 def filter_pvals(P, log, args):
     '''Remove out-of-bounds P-values'''
-    ii = (P > 0) & (P <= 1)
+    if args.log10p:
+        ii = P > 0
+    else:
+        ii = (P > 0) & (P <= 1)
     bad_p = (~ii).sum()
     if bad_p > 0:
         msg = 'WARNING: {N} SNPs had P outside of (0,1]. The P column may be mislabeled.'
@@ -490,7 +493,8 @@ parser.add_argument('--n-min', default=None, type=float,
                     help='Minimum N (sample size). Default is (90th percentile N) / 2.')
 parser.add_argument('--chunksize', default=5e6, type=int,
                     help='Chunksize.')
-
+parser.add_argument('--log10p', default=False, action='store_true',
+                    help='This flag informs LDSC that the P value is in -LOG10.')
 # optional args to specify column names
 parser.add_argument('--snp', default=None, type=str,
                     help='Name of SNP column (if not a name that ldsc understands). NB: case insensitive.')
