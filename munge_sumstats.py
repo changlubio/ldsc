@@ -713,6 +713,8 @@ def munge_sumstats(args, p=True):
             M=old - new, N=new))
         # filtering on N cannot be done chunkwise
         dat = process_n(dat, args, log)
+        if args.log10p:
+            dat.P = 10**(-dat.P)
         dat.P = p_to_z(dat.P, dat.N)
         dat.rename(columns={'P': 'Z'}, inplace=True)
         if not args.a1_inc:
